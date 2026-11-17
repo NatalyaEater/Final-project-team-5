@@ -1,5 +1,4 @@
-package UI;
-
+import UI.JavaFxApplication;
 import javafx.application.Application;
 
 public class Main {
