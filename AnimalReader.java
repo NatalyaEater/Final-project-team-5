@@ -16,7 +16,7 @@ public class AnimalReader {
             }
             try {
                 animals.add(parseAnimal(line));
-            } catch (IllegalArgumentException | NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 System.err.println("Пропущена строка \"" + line + "\": " + e.getMessage());
             }
         }
