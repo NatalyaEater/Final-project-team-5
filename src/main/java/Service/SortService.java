@@ -2,6 +2,8 @@ package Service;
 
 import AllComparators.AnimalComparators;
 
+import model.Animal;
+import model.MyArrayList;
 import SortStrategy.SortStrategy;
 import SortStrategy.BubbleSort;
 import SortStrategy.InsertionSort;
@@ -54,8 +56,8 @@ public class SortService {
     private SortStrategy<Animal> getStrategy(int algorithmChoice) {
 
         return switch (algorithmChoice) {
-            case 1 -> new BubbleSort<>();
-            case 2 -> new InsertionSort<>();
+            case 1 -> new BubbleSort<Animal>();
+            case 2 -> new InsertionSort<Animal>();
 
             default -> throw new IllegalArgumentException(
                     "Некорректный алгоритм сортировки"

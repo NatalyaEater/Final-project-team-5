@@ -1,20 +1,13 @@
 package AllComparators;
 
 import java.util.Comparator;
+import model.Animal;
+
 
 public class AnimalComparators {
 
     /**
      * Компараторы для сортировки объектов класса {@code Animal}.
-     *
-     * <p><b>Варианты сравнения:</b></p>
-     * <ul>
-     *     <li>{@code BY_NAME} — по имени без учёта регистра.</li>
-     *     <li>{@code BY_AGE} — по возрасту.</li>
-     *     <li>{@code BY_WEIGHT} — по весу.</li>
-     *     <li>{@code BY_ALL_FIELDS} — сначала по имени, при совпадении
-     *         имён — по возрасту, затем при совпадении возраста — по весу.</li>
-     * </ul>
      *
      * <p><b>Как устроен компаратор BY_NAME:</b></p>
      * <ul>

@@ -1,6 +1,8 @@
 package model;
 import java.util.Objects;
-public class Animal implements Comparable<Animal> {
+
+public class Animal {
+
     private final String name;
     private final int age;
     private final double weight;
@@ -23,18 +25,6 @@ public class Animal implements Comparable<Animal> {
         return weight;
     }
 
-    @Override 
-    public int compareTo(Animal other){
-        int nameCompare = this.name.compareToIgnoreCase(other.name);
-        if (nameCompare != 0) {
-            return nameCompare;
-        }
-        int ageCompare = Integer.compare(this.age, other.age);
-        if (ageCompare != 0) {
-            return ageCompare;
-        }
-        return Double.compare(this.weight, other.weight);
-    }
 
     @Override 
     public boolean equals(Object o){

@@ -2,7 +2,10 @@ package model;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+
 public class MyArrayList<T> implements Iterable<T> {
+
     private static final int DEFAULT_CAPACITY=10;
     private Object[] elements;
     private int size;

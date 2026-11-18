@@ -1,5 +1,7 @@
 package Service;
 
+import model.Animal;
+import model.MyArrayList;
 import AllComparators.AnimalComparators;
 import SortStrategy.SortStrategy;
 
@@ -24,19 +26,19 @@ public class AgeSort {
         return mergeAnimals(animals, sortedEvenAnimals);
     }
 
-    // Получение животных с чётным возрастом
-    private MyArrayList<Animal> animalsToEven(
-            MyArrayList<Animal> animals
-    ) {
 
-        return IntStream.range(0, animals.size())
+    private MyArrayList<Animal> animalsToEven(
+            MyArrayList<Animal> animals) {
+
+        //Создаём пустую коллекцию
+        MyArrayList<Animal> result = new MyArrayList<>();
+
+        IntStream.range(0, animals.size())
                 .mapToObj(animals::get)
                 .filter(animal -> animal.getAge() % 2 == 0)
-                .collect(
-                        MyArrayList::new,
-                        MyArrayList::add,
-                        (left, right) -> right.forEach(left::add)
-                );
+                .forEach(result::add);
+
+        return result;
     }
 
     // Формирование результирующей коллекции
