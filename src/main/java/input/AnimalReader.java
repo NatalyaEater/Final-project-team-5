@@ -1,26 +1,49 @@
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AnimalReader {
 
-    public static List<Animal> readAnimals(String fileName) throws IOException {
-        List<Animal> animals = new ArrayList<>();
+    public static Animal[] readAnimals(String fileName) throws IOException {
+        int count = 0;
+        String line;
 
-        List<String> lines = Files.readAllLines(Path.of(fileName));
-        for (String line : lines) {
-            if (line.isBlank()) {
-                continue; // пропускаем пустые строки
+        // Проход 1: считаем валидные строки, чтобы узнать размер массива
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(fileName))) {
+            while ((line = reader.readLine()) != null) {
+                if (!line.isBlank() && isParsable(line)) {
+                    count++;
+                }
             }
-            try {
-                animals.add(parseAnimal(line));
-            } catch (NumberFormatException e) {
-                System.err.println("Пропущена строка \"" + line + "\": " + e.getMessage());
+        }
+
+        // Проход 2: заполняем массив
+        Animal[] animals = new Animal[count];
+        int index = 0;
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(fileName))) {
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue; // пропускаем пустые строки
+                }
+                try {
+                    animals[index++] = parseAnimal(line);
+                } catch (NumberFormatException e) {
+                    index--; // строка не добавлена — откатываем индекс
+                    System.err.println("Пропущена строка \"" + line + "\": " + e.getMessage());
+                }
             }
         }
         return animals;
+    }
+
+    private static boolean isParsable(String line) {
+        try {
+            parseAnimal(line);
+            return true;
+        } catch (NumberFormatException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     private static Animal parseAnimal(String line) {
