@@ -37,7 +37,7 @@ public class MultiThreadTask
         
         final int threadCount = Math.min(4, list.size());
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
-        Future[] futures = new Future[threadCount];
+        Future<?>[] futures = new Future<?>[threadCount];
         
         for(int i = 0; i < threadCount; ++i)
         {
