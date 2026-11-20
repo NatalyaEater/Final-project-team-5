@@ -19,7 +19,15 @@ import model.MyArrayList;
  */
 public class MultiThreadTask
 {
-    public static int countOccurrences(MyArrayList<Animal> list, Animal value)
+
+    /**
+     * Подсчёт количества вхождений элемента многопоточным способом
+     * @param list  Коллекция для поиска
+     * @param value Значение для поиска
+     * @return Количество вхождений
+     * @throws IllegalStateException Если потоки были прерваны
+     */
+    public static int countOccurrences(MyArrayList<Animal> list, Animal value) throws IllegalStateException
     {
         var result = new AtomicInteger(0);
         if(list == null || value == null)
@@ -58,6 +66,7 @@ public class MultiThreadTask
             }
             catch (InterruptedException | ExecutionException e)
             {
+                throw new IllegalStateException("Возникло исключение при ожидании результата");
             }
         }
         
