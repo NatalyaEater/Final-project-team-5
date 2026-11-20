@@ -5,6 +5,9 @@ import java.nio.file.Path;
 
 public class AnimalReader {
 
+    /** Разделитель полей в CSV-файле. */
+    private static final String DELIMITER = ",";
+
     public static Animal[] readAnimals(String fileName) throws IOException {
         int count = 0;
         String line;
@@ -47,7 +50,7 @@ public class AnimalReader {
     }
 
     private static Animal parseAnimal(String line) {
-        String[] parts = line.split(";");
+        String[] parts = line.split(DELIMITER);
         if (parts.length != 3) {
             throw new IllegalArgumentException("Неверный формат строки: " + line);
         }
