@@ -35,7 +35,7 @@ public class MultiThreadTask
             return result.get();
         }
         
-        final int threadCount = 4;
+        final int threadCount = Math.min(4, list.size());
         ExecutorService service = Executors.newFixedThreadPool(threadCount);
         Future[] futures = new Future[threadCount];
         
@@ -58,19 +58,25 @@ public class MultiThreadTask
             });
         }
         
-        for(int i = 0; i < threadCount; ++i)
+        try
         {
-            try
-            {
+            for(int i = 0; i < threadCount; ++i)
                 futures[i].get();
-            }
-            catch (InterruptedException | ExecutionException e)
-            {
-                throw new IllegalStateException("Возникло исключение при ожидании результата");
-            }
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Ожидание потоков было прервано");
+        }
+        catch (ExecutionException e)
+        {
+            throw new IllegalStateException("Возникло исключение при ожидании результата");
+        }
+        finally
+        {
+            service.shutdown();
         }
         
-        service.shutdown();
         return result.get();
     }
 }
