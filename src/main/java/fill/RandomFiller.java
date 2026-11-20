@@ -19,8 +19,13 @@ public class RandomFiller
         m_random = new Random();
     }
     
-    void fill(MyArrayList collection, int fillCount)
+    void fill(MyArrayList<Animal> collection, int fillCount)
     {
+        if(collection == null || fillCount <= 0)
+        {
+            return;
+        }
+        
         String[] randomNames =
         {
             "Kitty",

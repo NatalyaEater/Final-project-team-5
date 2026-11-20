@@ -34,7 +34,7 @@ public class MultiThreadTaskTest
     @Test
     public void testCountOccurrencesWithEmptyList()
     {
-        MyArrayList list = null;
+        MyArrayList<Animal> list = null;
         int expectedResult = 0;
         
         int result = MultiThreadTask.countOccurrences(list, getAnimal("Kitty", 1, 1.0f));
@@ -47,7 +47,7 @@ public class MultiThreadTaskTest
     @Test
     public void testCountOccurrencesWithFilledList()
     {
-        MyArrayList list = new MyArrayList();
+        MyArrayList<Animal> list = new MyArrayList<>();
         final Animal animal = getAnimal("Kitty", 1, 1.0f);
         list.add(animal);
         list.add(animal);
@@ -65,7 +65,7 @@ public class MultiThreadTaskTest
     @Test
     public void testCountOccurrencesWithFilledListDifferentObjects()
     {
-        MyArrayList list = new MyArrayList();
+        MyArrayList<Animal> list = new MyArrayList<>();
         
         int expectedResult = 15;
         

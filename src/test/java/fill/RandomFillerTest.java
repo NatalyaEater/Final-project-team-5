@@ -4,13 +4,14 @@
  */
 package fill;
 
+import model.Animal;
 import model.MyArrayList;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author singl
+ * @author Алексей Калинин
  */
 public class RandomFillerTest
 {
@@ -22,7 +23,7 @@ public class RandomFillerTest
     public void testFillCount()
     {
         RandomFiller filler = new RandomFiller();
-        MyArrayList array = new MyArrayList();
+        MyArrayList<Animal> array = new MyArrayList<>();
         int arraySize = 10;
         filler.fill(array, arraySize);
         
@@ -33,4 +34,22 @@ public class RandomFillerTest
         }
     }
     
+    @Test
+    public void testNullCollection()
+    {
+        RandomFiller filler = new RandomFiller();
+        MyArrayList<Animal> array = null;
+        int arraySize = 10;
+        filler.fill(array, arraySize);
+    }
+    
+    @Test
+    public void testNullRepeatCount()
+    {
+        RandomFiller filler = new RandomFiller();
+        MyArrayList<Animal> array = new MyArrayList<>();
+        int arraySize = 0;
+        filler.fill(array, arraySize);
+        assertEquals(arraySize, array.size());
+    }
 }

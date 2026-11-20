@@ -19,7 +19,7 @@ import model.MyArrayList;
  */
 public class MultiThreadTask
 {
-    public static int countOccurrences(MyArrayList list, Animal value)
+    public static int countOccurrences(MyArrayList<Animal> list, Animal value)
     {
         var result = new AtomicInteger(0);
         if(list == null || value == null)
@@ -61,6 +61,7 @@ public class MultiThreadTask
             }
         }
         
+        service.shutdown();
         return result.get();
     }
 }
