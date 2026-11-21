@@ -1,4 +1,4 @@
-import UI.JavaFxApplication;
+import ui.JavaFxApplication;
 import javafx.application.Application;
 
 public class Main {

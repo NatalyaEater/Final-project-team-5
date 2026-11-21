@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 public record AnimalRow(
         String name,
