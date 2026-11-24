@@ -57,7 +57,8 @@ public class SortingPanel extends VBox {
                 "Все поля",
                 "Имя",
                 "Возраст",
-                "Вес"
+                "Вес",
+                "Четная сортировка по возрасту"
         );
 
         fieldComboBox.setValue("Все поля");
