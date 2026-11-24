@@ -1,0 +1,82 @@
+package concurrent;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import model.Animal;
+import model.MyArrayList;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+/**
+ *
+ * @author Алекесй Калинин
+ */
+public class MultiThreadTask
+{
+
+    /**
+     * Подсчёт количества вхождений элемента многопоточным способом
+     * @param list  Коллекция для поиска
+     * @param value Значение для поиска
+     * @return Количество вхождений
+     * @throws IllegalStateException Если потоки были прерваны
+     */
+    public static int countOccurrences(MyArrayList<Animal> list, Animal value) throws IllegalStateException
+    {
+        var result = new AtomicInteger(0);
+        if(list == null || value == null)
+        {
+            return result.get();
+        }
+        
+        final int threadCount = Math.min(4, list.size());
+        ExecutorService service = Executors.newFixedThreadPool(threadCount);
+        Future<?>[] futures = new Future<?>[threadCount];
+        
+        for(int i = 0; i < threadCount; ++i)
+        {
+            final int chunkSize = list.size() / threadCount;
+            final int start = i * chunkSize;
+            final int count = (i == (threadCount - 1))?
+                    chunkSize + list.size() % threadCount : chunkSize;
+            
+            futures[i] = service.submit(() ->
+            {
+                for (int i1 = start; i1 < start + count; ++i1)
+                {
+                    if (list.get(i1).equals(value))
+                    {
+                        result.incrementAndGet();
+                    }
+                }
+            });
+        }
+        
+        try
+        {
+            for(int i = 0; i < threadCount; ++i)
+                futures[i].get();
+        }
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Ожидание потоков было прервано");
+        }
+        catch (ExecutionException e)
+        {
+            throw new IllegalStateException("Возникло исключение при ожидании результата");
+        }
+        finally
+        {
+            service.shutdown();
+        }
+        
+        return result.get();
+    }
+}
