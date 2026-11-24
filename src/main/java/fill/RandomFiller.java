@@ -18,8 +18,8 @@ public class RandomFiller
     {
         m_random = new Random();
     }
-    
-    void fill(MyArrayList<Animal> collection, int fillCount)
+
+    public void fill(MyArrayList<Animal> collection, int fillCount)
     {
         if(collection == null || fillCount <= 0)
         {
