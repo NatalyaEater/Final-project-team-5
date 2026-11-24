@@ -246,24 +246,39 @@ public class MainWindow {
         alert.showAndWait();
     }
 
-    // Временная демонстрация сортировки.
+
     private void sortCollection() {
 
         if (animals.size() == 0) {
             showError("Коллекция пуста. Сначала создайте коллекцию");
             return;
         }
-
         try {
             int fieldChoice = getFieldChoice();
             int algorithmChoice = getAlgorithmChoice();
-            animals = sortService.sort(animals, fieldChoice, algorithmChoice);
 
+            // Специальная сортировка по чётному возрасту
+            if (fieldChoice == 5) {
+                animals = sortService.sortEvenAge(
+                        animals,
+                        algorithmChoice
+                );
+            } else {
+                // Обычная сортировка
+                animals = sortService.sort(
+                        animals,
+                        fieldChoice,
+                        algorithmChoice
+                );
+            }
             showAnimals();
             resultPanel.setStatus(
-                    "Сортировка выполнена. Алгоритм: " + sortingPanel.getAlgorithm() +
-                            ". Поле: " + sortingPanel.getField() + "."
+                    "Сортировка выполнена. Алгоритм: "
+                            + sortingPanel.getAlgorithm()
+                            + ". Поле: "
+                            + sortingPanel.getField() + "."
             );
+
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }
@@ -276,6 +291,7 @@ public class MainWindow {
                 case "Возраст" -> 2;
                 case "Вес" -> 3;
                 case "Все поля" -> 4;
+                case "Четная сортировка по возрасту" -> 5;
 
                 default ->  throw new IllegalArgumentException(
                         "Неизвестное поле сортировки"

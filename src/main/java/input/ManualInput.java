@@ -4,6 +4,8 @@ import validation.Validator;
 import model.Animal;
 import model.MyArrayList;
 
+import java.util.stream.Stream;
+
 public class ManualInput {
 
     private final MyArrayList<Animal> animals;
@@ -21,19 +23,15 @@ public class ManualInput {
             return error;
         }
 
-        // Преобразуем строки в числа
-        int animalAge = Integer.parseInt(age.trim());
-        double animalWeight = Double.parseDouble(weight.trim());
-
         try {
-            // Создаём животное и проверяем его через Builder
-            Animal animal = new Animal.Builder()
-                    .setName(name)
-                    .setAge(animalAge)
-                    .setWeight(animalWeight)
-                    .build();
-
-            animals.add(animal);
+            // Создаём поток и преобразуем имя в объект Animal
+            Stream.of(name)
+                    .map(animalName -> new Animal.Builder()
+                            .setName(animalName)
+                            .setAge(Integer.parseInt(age.trim()))
+                            .setWeight(Double.parseDouble(weight.trim()))
+                            .build())
+                    .forEach(animals::add);
 
             return null;
 
