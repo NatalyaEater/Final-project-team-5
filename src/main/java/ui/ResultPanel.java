@@ -1,8 +1,12 @@
+//Дополнительные операции и результат
+
 package ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
 
 public class ResultPanel extends VBox {
 
@@ -131,6 +135,19 @@ public class ResultPanel extends VBox {
     public void setRows(AnimalRow... rows) {
 
         table.getItems().setAll(rows);
+    }
+
+    // Заполняем таблицу списком объектов.
+    public void setRows(List<AnimalRow> rows) {
+
+        table.getItems().setAll(rows);
+    }
+
+    // Выделяет строку таблицы и прокручивает к ней.
+    public void selectRow(int index) {
+
+        table.getSelectionModel().select(index);
+        table.scrollTo(index);
     }
 
     // Изменяем информационное сообщение.

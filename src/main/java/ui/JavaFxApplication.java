@@ -1,3 +1,6 @@
+//JavaFxApplication.java — класс, наследующий Application.
+// В методе start создаёт MainWindow и показывает его. Это мост между запуском JavaFX и окном.
+
 package ui;
 
 import javafx.application.Application;

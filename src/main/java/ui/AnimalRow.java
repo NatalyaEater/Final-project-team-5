@@ -1,3 +1,5 @@
+//модель данных одной строки таблицы
+
 package ui;
 
 public record AnimalRow(

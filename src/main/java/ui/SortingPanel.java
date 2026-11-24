@@ -1,3 +1,5 @@
+//Операции с коллекцией
+
 package ui;
 
 import javafx.geometry.Insets;
@@ -53,9 +55,9 @@ public class SortingPanel extends VBox {
 
         fieldComboBox.getItems().addAll(
                 "Все поля",
-                "Первое поле",
-                "Второе поле",
-                "Третье поле"
+                "Имя",
+                "Возраст",
+                "Вес"
         );
 
         fieldComboBox.setValue("Все поля");

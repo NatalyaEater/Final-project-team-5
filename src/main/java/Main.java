@@ -1,3 +1,5 @@
+//только запускает JavaFX через Application.launch(JavaFxApplication.class, args)
+
 import ui.JavaFxApplication;
 import javafx.application.Application;
 

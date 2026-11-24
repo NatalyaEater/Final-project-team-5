@@ -1,3 +1,5 @@
+//Работа с коллекцией
+
 package ui;
 
 import javafx.geometry.Insets;
@@ -12,16 +14,21 @@ import java.io.File;
 
 public class InputPanel extends VBox {
 
+    //привязывает окно выбора к главному окну
     private final Stage stage;
 
+    //способы заполнения
     private final RadioButton manualRadio;
     private final RadioButton randomRadio;
     private final RadioButton fileRadio;
 
+    //счётчик количества элементов для случайной генерации
     private final Spinner<Integer> countSpinner;
     private final TextField filePathField;
 
+    //контейнер, содержимое которого меняется в зависимости от выбранного способа.
     private final VBox dynamicControls;
+    //кнопка «Создать коллекцию».
     private final Button createButton;
 
     public InputPanel(Stage stage) {
@@ -203,9 +210,21 @@ public class InputPanel extends VBox {
         return null;
     }
 
-    // Возвращает количество элементов.
+    // Возвращает количество элементов из поля счетчика
     public int getCount() {
-        return countSpinner.getValue();
+
+        String text = countSpinner.getEditor().getText().trim();
+
+        int count;
+        try {
+            count = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Количество должно быть целым числом");
+        }
+        if (count < 1 || count > 1000) {
+            throw new IllegalArgumentException("Колличество должно быть от 1 до 1000");
+        }
+        return count;
     }
 
     // Возвращает путь к файлу.
