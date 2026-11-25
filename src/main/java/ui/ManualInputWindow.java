@@ -1,20 +1,17 @@
-//модальное окно для ручного ввода животных
-
 package ui;
 
+import input.ManualInput;
+import model.Animal;
+import model.MyArrayList;
+
 import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-import javafx.stage.Modality;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import model.Animal;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
 
 public class ManualInputWindow {
 
@@ -27,17 +24,20 @@ public class ManualInputWindow {
     private final Button addButton;
     private final Button finishButton;
 
-    private final List<Animal> animals = new ArrayList<>();
-
     private final Label messageLabel;
 
-    public ManualInputWindow(Stage owner) {
+    private final ManualInput manualInput;
+
+    public ManualInputWindow(Stage owner, MyArrayList<Animal> animals) {
 
         window = new Stage();
 
+        // Создаём обработчик ручного добавления.
+        manualInput = new ManualInput(animals);
+
         // Делаем окно модальным.
         window.initOwner(owner);
-        window.initModality(Modality.WINDOW_MODAL);  //блокирует только окно-владельца
+        window.initModality(Modality.WINDOW_MODAL);
 
         window.setTitle("Добавление животных");
 
@@ -53,7 +53,7 @@ public class ManualInputWindow {
         weightField = new TextField();
         weightField.setPromptText("Введите вес (кг)");
 
-        // Метка для ошибок и сообщений об успешном добавлении.
+        // Метка для сообщений.
         messageLabel = new Label();
         messageLabel.setWrapText(true);
         messageLabel.setMinHeight(32);
@@ -62,7 +62,6 @@ public class ManualInputWindow {
         addButton = new Button("Добавить животное");
         finishButton = new Button("Завершить ввод");
 
-        // Устанавливаем размеры кнопок.
         addButton.setPrefSize(160, 40);
         finishButton.setPrefSize(145, 40);
 
@@ -74,13 +73,11 @@ public class ManualInputWindow {
 
         buttonBox.setAlignment(Pos.CENTER);
 
-        //обработчик кнопки "добавить животное"
+        // Обработчики кнопок.
         addButton.setOnAction(event -> onAddClicked());
-
-        //"Завершить ввод"
         finishButton.setOnAction(event -> window.close());
 
-        // Создаём основную панель.
+        // Основная панель.
         VBox root = new VBox(
                 12,
                 new Label("Имя животного:"),
@@ -96,54 +93,48 @@ public class ManualInputWindow {
         root.setPadding(new Insets(20));
         root.setPrefWidth(360);
 
-        // Создаём сцену по размерам содержимого.
         Scene scene = new Scene(root);
 
         window.setScene(scene);
         window.sizeToScene();
         window.setResizable(false);
-
     }
 
-    //действие при нажатии "добавить животное"
+    // Действие при нажатии кнопки добавления.
     private void onAddClicked() {
-        try {
-            int age = Integer.parseInt(ageField.getText().trim());
-            double weight = Double.parseDouble(weightField.getText().trim().replace(',', '.'));
 
-            Animal animal = new Animal.Builder()
-                    .setName(nameField.getText().trim())
-                    .setAge(age)
-                    .setWeight(weight)
-                    .build();
+        String error = manualInput.addAnimal(
+                nameField.getText().trim(),
+                ageField.getText().trim(),
+                weightField.getText().trim().replace(',', '.')
+        );
 
-            animals.add(animal);
-
-            //очистка полей для ввода след данных
-            nameField.clear();
-            ageField.clear();
-            weightField.clear();
-            nameField.requestFocus();
-
-            showMessage("Добавлено: " + animal.getName() + ". Всего: " + animals.size(), false);
-
-        } catch (NumberFormatException e) {
-            showMessage("Возраст должен быть целым числом, вес - числом.", true);
-        } catch (IllegalArgumentException e) {
-            showMessage(e.getMessage(), true);
+        if (error != null) {
+            showMessage(error, true);
+            return;
         }
+
+        showMessage("Животное успешно добавлено.", false);
+
+        // Очищаем поля для следующего ввода.
+        nameField.clear();
+        ageField.clear();
+        weightField.clear();
+
+        nameField.requestFocus();
     }
 
     private void showMessage(String text, boolean isError) {
-        messageLabel.setStyle(isError ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
+        messageLabel.setStyle(
+                isError
+                        ? "-fx-text-fill: red;"
+                        : "-fx-text-fill: green;"
+        );
+
         messageLabel.setText(text);
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-
-    // Метод открытия окна.
+    // Открытие окна.
     public void show() {
         window.showAndWait();
     }

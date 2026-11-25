@@ -1,4 +1,5 @@
-//собирает всё приложение воедино
+
+// Собирает всё приложение воедино
 
 package ui;
 
@@ -44,6 +45,7 @@ public class MainWindow {
     private final ResultPanel resultPanel;
 
     private MyArrayList<Animal> animals = new MyArrayList<>();
+
     private final FileLoader fileLoader = new FileLoader();
     private final RandomFiller randomFiller = new RandomFiller();
     private final FileResultWriter fileWriter = new FileResultWriter();
@@ -96,20 +98,19 @@ public class MainWindow {
 
         // Создание коллекции.
         inputPanel.setOnCreate(() -> {
+
             if (inputPanel.getInputMethod().equals("manual")) {
+
                 ManualInputWindow manualWindow =
-                        new ManualInputWindow(stage);
+                        new ManualInputWindow(stage, animals);
 
                 manualWindow.show();
 
-                animals = new MyArrayList<>();
-                for (Animal animal : manualWindow.getAnimals()) {
-                    animals.add(animal);
-                }
                 showAnimals();
 
             } else if (inputPanel.getInputMethod().equals("file")) {
                 loadFromFile();
+
             } else if (inputPanel.getInputMethod().equals("random")) {
                 generateRandom();
             }
@@ -119,14 +120,11 @@ public class MainWindow {
         sortingPanel.setOnSort(() -> sortCollection());
 
         // Дополнительные операции.
-        resultPanel.setOnSearch(() -> findAnimal()
-        );
+        resultPanel.setOnSearch(() -> findAnimal());
 
-        resultPanel.setOnCount(() -> countAnimals()
-        );
+        resultPanel.setOnCount(() -> countAnimals());
 
-        resultPanel.setOnSave(() -> saveAnimals()
-        );
+        resultPanel.setOnSave(() -> saveAnimals());
     }
 
     // Подготовка пустой коллекции для заполнения.
@@ -176,7 +174,7 @@ public class MainWindow {
         }
     }
 
-    //Заполняем коллекцию случайным животным
+    // Заполняем коллекцию случайными животными.
     private void generateRandom() {
 
         try {
@@ -185,7 +183,9 @@ public class MainWindow {
             MyArrayList<Animal> generated = new MyArrayList<>();
             randomFiller.fill(generated, count);
             animals = generated;
+
             showAnimals();
+
         } catch (IllegalArgumentException e) {
             showError(e.getMessage());
         }
@@ -218,7 +218,10 @@ public class MainWindow {
 
         // Если расширения нет, добавляем .csv.
         if (!fileName.contains(".")) {
-            selectedFile = new File(selectedFile.getParentFile(), fileName + ".csv");
+            selectedFile = new File(
+                    selectedFile.getParentFile(),
+                    fileName + ".csv"
+            );
 
         } else if (!fileName.toLowerCase().endsWith(".csv")) {
             showError("Можно сохранять только CSV-файлы.");
@@ -226,8 +229,14 @@ public class MainWindow {
         }
 
         try {
-            fileWriter.writeAnimals(animals, selectedFile.getAbsolutePath());
-            resultPanel.setStatus("Коллекция сохранена: " + selectedFile.getName());
+            fileWriter.writeAnimals(
+                    animals,
+                    selectedFile.getAbsolutePath()
+            );
+
+            resultPanel.setStatus(
+                    "Коллекция сохранена: " + selectedFile.getName()
+            );
 
         } catch (IOException | IllegalArgumentException e) {
             showError("Ошибка сохранения: " + e.getMessage());
@@ -246,32 +255,36 @@ public class MainWindow {
         alert.showAndWait();
     }
 
-
+    // Выполняет сортировку коллекции.
     private void sortCollection() {
 
         if (animals.size() == 0) {
             showError("Коллекция пуста. Сначала создайте коллекцию");
             return;
         }
+
         try {
             int fieldChoice = getFieldChoice();
             int algorithmChoice = getAlgorithmChoice();
 
-            // Специальная сортировка по чётному возрасту
+            // Специальная сортировка по чётному возрасту.
             if (fieldChoice == 5) {
                 animals = sortService.sortEvenAge(
                         animals,
                         algorithmChoice
                 );
+
             } else {
-                // Обычная сортировка
+                // Обычная сортировка.
                 animals = sortService.sort(
                         animals,
                         fieldChoice,
                         algorithmChoice
                 );
             }
+
             showAnimals();
+
             resultPanel.setStatus(
                     "Сортировка выполнена. Алгоритм: "
                             + sortingPanel.getAlgorithm()
@@ -284,20 +297,22 @@ public class MainWindow {
         }
     }
 
-        // Преобразует выбранное поле в номер для SortService
-        private int getFieldChoice() {
-            return switch (sortingPanel.getField()) {
-                case "Имя" -> 1;
-                case "Возраст" -> 2;
-                case "Вес" -> 3;
-                case "Все поля" -> 4;
-                case "Четная сортировка по возрасту" -> 5;
+    // Преобразует выбранное поле в номер для SortService.
+    private int getFieldChoice() {
 
-                default ->  throw new IllegalArgumentException(
-                        "Неизвестное поле сортировки"
-                );
-            };
-        }
+        return switch (sortingPanel.getField()) {
+            case "Имя" -> 1;
+            case "Возраст" -> 2;
+            case "Вес" -> 3;
+            case "Все поля" -> 4;
+            case "Четная сортировка по возрасту" -> 5;
+
+            default -> throw new IllegalArgumentException(
+                    "Неизвестное поле сортировки"
+            );
+        };
+    }
+
     // Считает, сколько раз введённое животное встречается в коллекции.
     private void countAnimals() {
 
@@ -307,7 +322,11 @@ public class MainWindow {
         }
 
         AnimalQueryWindow queryWindow =
-                new AnimalQueryWindow(stage, "Подсчёт вхождений", "Подсчитать");
+                new AnimalQueryWindow(
+                        stage,
+                        "Подсчёт вхождений",
+                        "Подсчитать"
+                );
 
         Optional<Animal> target = queryWindow.showAndGet();
 
@@ -317,9 +336,13 @@ public class MainWindow {
         }
 
         try {
-            int count = MultiThreadTask.countOccurrences(animals, target.get());
+            int count = MultiThreadTask.countOccurrences(
+                    animals,
+                    target.get()
+            );
 
             Animal animal = target.get();
+
             resultPanel.setStatus(
                     "Вхождений животного «" + animal.getName() + ", "
                             + animal.getAge() + ", " + animal.getWeight()
@@ -339,7 +362,10 @@ public class MainWindow {
             return;
         }
 
-        if (!BinarySearch.isSorted(animals, AnimalComparators.BY_ALL_FIELDS)) {
+        if (!BinarySearch.isSorted(
+                animals,
+                AnimalComparators.BY_ALL_FIELDS
+        )) {
             showError(
                     "Для поиска коллекция должна быть отсортирована по всем полям. "
                             + "Выполните сортировку по полю «Все поля»."
@@ -348,7 +374,11 @@ public class MainWindow {
         }
 
         AnimalQueryWindow queryWindow =
-                new AnimalQueryWindow(stage, "Поиск элемента", "Найти");
+                new AnimalQueryWindow(
+                        stage,
+                        "Поиск элемента",
+                        "Найти"
+                );
 
         Optional<Animal> target = queryWindow.showAndGet();
 
@@ -369,27 +399,34 @@ public class MainWindow {
                 + animal.getAge() + ", " + animal.getWeight() + " кг»";
 
         if (index == -1) {
-            resultPanel.setStatus("Животное " + description + " не найдено.");
+            resultPanel.setStatus(
+                    "Животное " + description + " не найдено."
+            );
 
         } else {
             resultPanel.selectRow(index);
+
             resultPanel.setStatus(
-                    "Животное " + description + " найдено, позиция: " + (index + 1) + "."
+                    "Животное " + description
+                            + " найдено, позиция: " + (index + 1) + "."
             );
         }
     }
-// Преобразует выбранный алгоритм в номер для SortService.
-        private int getAlgorithmChoice() {
 
-            String algorithm = sortingPanel.getAlgorithm();
-            return switch (algorithm) {
-                case "Пузырьковая сортировка" -> 1;
-                case "Сортировка вставками" -> 2;
-                default -> throw new IllegalArgumentException(
-                        "Алгоритм «" + algorithm + "» ещё не реализован."
-                );
-            };
-        }
+    // Преобразует выбранный алгоритм в номер для SortService.
+    private int getAlgorithmChoice() {
+
+        String algorithm = sortingPanel.getAlgorithm();
+
+        return switch (algorithm) {
+            case "Пузырьковая сортировка" -> 1;
+            case "Сортировка вставками" -> 2;
+
+            default -> throw new IllegalArgumentException(
+                    "Алгоритм «" + algorithm + "» ещё не реализован."
+            );
+        };
+    }
 
     // Показывает главное окно.
     public void show() {
