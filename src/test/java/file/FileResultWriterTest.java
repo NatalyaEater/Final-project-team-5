@@ -69,18 +69,17 @@ class FileResultWriterTest {
         assertTrue(content.contains("Мурка,3,8.2"));
     }
 
-    // Проверка сохранения пустой коллекции
+    // Проверка запрета сохранения пустой коллекции
     @Test
-    void shouldWriteEmptyCollection() throws IOException {
+    void shouldRejectEmptyCollection() {
         MyArrayList<Animal> animals = new MyArrayList<>();
 
         Path file = tempDir.resolve("empty.csv");
 
-        writer.writeAnimals(animals, file.toString());
-
-        String content = Files.readString(file, StandardCharsets.UTF_8);
-
-        assertEquals("name,age,weight" + System.lineSeparator(), content);
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> writer.writeAnimals(animals, file.toString())
+        );
     }
 
     // Проверка передачи null вместо коллекции
@@ -105,22 +104,27 @@ class FileResultWriterTest {
         );
     }
 
-    // Проверка запрета перезаписи существующего файла
+    // Проверка перезаписи существующего файла
     @Test
-    void shouldNotOverwriteExistingFile() throws IOException {
+    void shouldOverwriteExistingFile() throws IOException {
         MyArrayList<Animal> animals = new MyArrayList<>();
+
+        animals.add(new Animal.Builder()
+                .setName("Барсик")
+                .setAge(5)
+                .setWeight(12.5)
+                .build());
 
         Path file = tempDir.resolve("animals.csv");
 
         Files.writeString(file, "Original content");
 
-        assertThrows(
-                IOException.class,
-                () -> writer.writeAnimals(animals, file.toString())
-        );
+        writer.writeAnimals(animals, file.toString());
 
-        String content = Files.readString(file);
+        String content = Files.readString(file, StandardCharsets.UTF_8);
 
-        assertEquals("Original content", content);
+        assertTrue(content.contains("name,age,weight"));
+        assertTrue(content.contains("Барсик,5,12.5"));
+        assertFalse(content.contains("Original content"));
     }
 }
